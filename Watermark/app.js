@@ -14,7 +14,7 @@ const addTextWatermarkToImage = async function(inputFile, outputFile, text) {
     image.print(font, 0, 0, textData, image.getWidth(), image.getHeight());
     image.quality(100).write(outputFile);
     console.log('Watermark text added succesfully!');
-    startApp();
+    await startApp();
   };
 
 const addImageWatermarkToImage = async function(inputFile, outputFile, watermarkFile) {
@@ -29,7 +29,7 @@ const addImageWatermarkToImage = async function(inputFile, outputFile, watermark
     });
     image.quality(100).write(outputFile);
     console.log('Watermark image added succesfully!');
-    startApp();
+    await startApp();
   };
 
   const prepareOutputFilename = (filename) => {
@@ -76,8 +76,11 @@ const addImageWatermarkToImage = async function(inputFile, outputFile, watermark
     }]);
    
     options.watermarkText = text.value;
-    addTextWatermarkToImage('./img/' + options.inputImage, './img/' + prepareOutputFilename(options.inputImage), options.watermarkText);
-   
+    try {
+      await addTextWatermarkToImage('./img/' + options.inputImage, './img/' + prepareOutputFilename(options.inputImage), options.watermarkText);
+  } catch (e) {
+      console.log(e)
+  }
     } else {
   
       const image = await inquirer.prompt([{
@@ -94,7 +97,12 @@ const addImageWatermarkToImage = async function(inputFile, outputFile, watermark
       console.log('Something went wrong... Try again');
       process.exit();
     }
-    addImageWatermarkToImage('./img/' + options.inputImage, './img/' + prepareOutputFilename(options.inputImage), './img/' + options.watermarkImage);
+    try {
+      await addImageWatermarkToImage('./img/' + options.inputImage, './img/' + prepareOutputFilename(options.inputImage), './img/' + options.watermarkImage);
+    } catch(e) {
+      console.timeLog(e);
+    }
+    
   }
 };
   
